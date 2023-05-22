@@ -10,7 +10,7 @@ public class Main {
         Directory directory = new Directory();
 
         log.info("Loading projects");
-        ProjectList projectList = directory.getProjectList();
-        projectList.load();
+        ProjectList projectList = directory.loadProjects();
+        projectList.loadAll();
     }
 }
