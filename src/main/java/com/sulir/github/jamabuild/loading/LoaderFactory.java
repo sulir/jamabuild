@@ -1,4 +1,4 @@
-package com.sulir.github.jamabuild.loaders;
+package com.sulir.github.jamabuild.loading;
 
 public class LoaderFactory {
     public static Loader createLoader(String type, String id) {
