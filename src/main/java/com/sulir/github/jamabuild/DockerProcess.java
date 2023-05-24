@@ -1,8 +1,8 @@
 package com.sulir.github.jamabuild;
 
-import com.sulir.github.jamabuild.Build;
-
 public class DockerProcess {
+    private static final String SETTINGS_FILE = "jamabuild.yml";
+
     private final String type;
     private final String projectId;
 
@@ -16,6 +16,6 @@ public class DockerProcess {
     }
 
     public void run() {
-        Build.main(new String[] {type, projectId});
+        Build.main(new String[] {type, projectId, SETTINGS_FILE});
     }
 }

@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 public class Project {
     private final String id;
     private final Path root;
+    private Settings settings;
 
     public Project(String id, String directory) {
         this.id = id;
@@ -45,5 +46,13 @@ public class Project {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 }

@@ -2,6 +2,9 @@ package com.sulir.github.jamabuild.building;
 
 import com.sulir.github.jamabuild.Project;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GradleBuilder extends Builder {
     public GradleBuilder(Project project) {
         super(project);
@@ -13,7 +16,16 @@ public class GradleBuilder extends Builder {
     }
 
     @Override
-    protected String[] getCommand() {
-        return new String[] {"gradle", "clean", "assemble"};
+    protected List<String> getBuildToolCommand() {
+        List<String> command = new ArrayList<>(List.of("gradle", "clean"));
+
+        if (project.getSettings().skipTests())
+            command.add("assemble");
+        else
+            command.add("build");
+
+        command.add("--console=plain");
+
+        return command;
     }
 }

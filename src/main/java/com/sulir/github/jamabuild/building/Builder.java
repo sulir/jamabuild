@@ -1,10 +1,15 @@
 package com.sulir.github.jamabuild.building;
 
 import com.sulir.github.jamabuild.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
 
 public abstract class Builder {
+    Logger log = LoggerFactory.getLogger(Builder.class);
     protected final Project project;
 
     public Builder(Project project) {
@@ -12,10 +17,14 @@ public abstract class Builder {
     }
 
     public BuildResult runBuild() {
-        ProcessBuilder builder = new ProcessBuilder(getCommand());
+        List<String> command = constructCommand();
+        log.info("Command: {}", String.join(" ", command));
+        ProcessBuilder builder = new ProcessBuilder(command);
+
         builder.directory(project.getSource().toFile());
         builder.redirectOutput(project.getLog().toFile());
         builder.redirectErrorStream(true);
+
         try {
             Process process = builder.start();
             process.waitFor();
@@ -26,6 +35,12 @@ public abstract class Builder {
         }
     }
 
+    private List<String> constructCommand() {
+        List<String> timeout = List.of("timeout", "-k1m", project.getSettings().timeout());
+        return Stream.concat(timeout.stream(), getBuildToolCommand().stream())
+                .toList();
+    }
+
     protected abstract String getToolName();
-    protected abstract String[] getCommand();
+    protected abstract List<String> getBuildToolCommand();
 }

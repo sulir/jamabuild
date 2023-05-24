@@ -2,6 +2,8 @@ package com.sulir.github.jamabuild.building;
 
 import com.sulir.github.jamabuild.Project;
 
+import java.util.List;
+
 public class NoneBuilder extends Builder{
     public NoneBuilder(Project project) {
         super(project);
@@ -13,7 +15,7 @@ public class NoneBuilder extends Builder{
     }
 
     @Override
-    protected String[] getCommand() {
-        return new String[] {"false"};
+    protected List<String> getBuildToolCommand() {
+        return List.of("false");
     }
 }
