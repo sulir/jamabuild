@@ -8,22 +8,38 @@ import java.util.stream.Stream;
 
 public class Project {
     private final String id;
-    private final Path directory;
+    private final Path root;
 
     public Project(String id, String directory) {
         this.id = id;
-        this.directory = Path.of(directory);
+        this.root = Path.of(directory);
     }
 
     public String getId() {
         return id;
     }
 
-    public boolean hasFile(String pattern) {
-        String glob = "glob:" + directory.resolve(pattern);
-        PathMatcher matcher = directory.getFileSystem().getPathMatcher(glob);
+    public Path getRoot() {
+        return root;
+    }
 
-        try (Stream<Path> files = Files.walk(directory)) {
+    public Path getSource() {
+        return root.resolve("source");
+    }
+
+    public Path getLog() {
+        return root.resolve("build.log");
+    }
+
+    public Path getResultFile() {
+        return root.resolve("result.tsv");
+    }
+
+    public boolean hasSourceFile(String pattern) {
+        String glob = "glob:" + getSource().resolve(pattern);
+        PathMatcher matcher = getSource().getFileSystem().getPathMatcher(glob);
+
+        try (Stream<Path> files = Files.walk(getSource())) {
             return files.anyMatch(matcher::matches);
         } catch (IOException e) {
             e.printStackTrace();

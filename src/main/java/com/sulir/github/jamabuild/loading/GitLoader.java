@@ -3,20 +3,11 @@ package com.sulir.github.jamabuild.loading;
 import com.sulir.github.jamabuild.Project;
 import org.eclipse.jgit.api.Git;
 
-import java.io.File;
 import java.nio.file.Path;
 
 public class GitLoader extends Loader {
     public GitLoader(String projectId) {
         super(projectId);
-    }
-
-    public String getDirectory() {
-        return Path.of(PROJECTS_DIR, createValidFileName(projectId)).toString();
-    }
-
-    private String createValidFileName(String id) {
-        return id.replaceAll("\\W", "_");
     }
 
     @Override
@@ -25,12 +16,19 @@ public class GitLoader extends Loader {
     }
 
     protected Project gitClone(String url) throws Exception {
-        if (!new File(getDirectory()).exists()) {
+        Project project = new Project(projectId, getDirectory());
+
+        if (!project.getSource().toFile().exists()) {
             Git.cloneRepository()
                     .setURI(url)
-                    .setDirectory(new File(getDirectory()))
+                    .setDirectory(project.getSource().toFile())
                     .call();
         }
-        return new Project(projectId, getDirectory());
+
+        return project;
+    }
+
+    private String getDirectory() {
+        return Path.of(PROJECTS_DIR, projectId.replaceAll("\\W", "_")).toString();
     }
 }

@@ -10,12 +10,7 @@ public class LocalLoader extends Loader {
     }
 
     @Override
-    public String getDirectory() {
-        return Path.of(PROJECTS_DIR, projectId).toString();
-    }
-
-    @Override
     public Project load() {
-        return new Project(projectId, getDirectory());
+        return new Project(projectId, Path.of(PROJECTS_DIR, projectId).toString());
     }
 }

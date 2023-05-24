@@ -11,11 +11,5 @@ public abstract class Loader {
         this.projectId = projectId;
     }
 
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public abstract String getDirectory();
-
     public abstract Project load() throws Exception;
 }

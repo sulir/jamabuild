@@ -1,5 +1,6 @@
 package com.sulir.github.jamabuild;
 
+import com.sulir.github.jamabuild.building.BuildResult;
 import com.sulir.github.jamabuild.building.Builder;
 import com.sulir.github.jamabuild.building.BuilderFactory;
 import com.sulir.github.jamabuild.loading.Loader;
@@ -21,7 +22,8 @@ public class Build {
 
             log.info("Building");
             Builder builder = BuilderFactory.createBuilder(project);
-            builder.runBuild();
+            BuildResult result = builder.runBuild();
+            result.write(project.getResultFile());
         } catch (Exception e) {
             e.printStackTrace();
         }
