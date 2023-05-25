@@ -1,6 +1,9 @@
 package com.sulir.github.jamabuild.criteria;
 
 import com.sulir.github.jamabuild.Project;
+import com.sulir.github.jamabuild.exclusion.AllowedTypes;
+import com.sulir.github.jamabuild.exclusion.Criterion;
+import com.sulir.github.jamabuild.exclusion.CriterionType;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.sulir.github.jamabuild.criteria;
+package com.sulir.github.jamabuild.exclusion;
 
 public enum CriterionType {
     PRE_BUILD, POST_BUILD

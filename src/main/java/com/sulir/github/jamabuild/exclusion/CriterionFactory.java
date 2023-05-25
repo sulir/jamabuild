@@ -1,10 +1,13 @@
-package com.sulir.github.jamabuild.criteria;
+package com.sulir.github.jamabuild.exclusion;
+
+import com.sulir.github.jamabuild.criteria.Android;
+import com.sulir.github.jamabuild.criteria.BashScript;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class CriterionFactory {
-    private static final List<Class<? extends Criterion>> criteria = List.of(BashScript.class);
+    private static final List<Class<? extends Criterion>> criteria = List.of(Android.class, BashScript.class);
     private final CriterionType type;
 
     public CriterionFactory(CriterionType type) {

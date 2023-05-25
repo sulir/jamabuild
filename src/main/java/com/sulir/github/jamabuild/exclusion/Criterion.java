@@ -1,4 +1,4 @@
-package com.sulir.github.jamabuild.criteria;
+package com.sulir.github.jamabuild.exclusion;
 
 import com.sulir.github.jamabuild.Project;
 

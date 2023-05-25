@@ -1,4 +1,4 @@
-package com.sulir.github.jamabuild.criteria;
+package com.sulir.github.jamabuild.exclusion;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
