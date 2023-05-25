@@ -1,5 +1,7 @@
 package com.sulir.github.jamabuild;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,6 +47,14 @@ public class Project {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void delete() {
+        try {
+            FileUtils.deleteDirectory(root.toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
