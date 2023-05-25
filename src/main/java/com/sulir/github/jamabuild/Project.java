@@ -18,10 +18,6 @@ public class Project {
         this.root = Path.of(directory);
     }
 
-    public String getId() {
-        return id;
-    }
-
     public Path getRoot() {
         return root;
     }
@@ -64,5 +60,9 @@ public class Project {
 
     public void setSettings(Settings settings) {
         this.settings = settings;
+    }
+
+    public String toString() {
+        return id;
     }
 }
