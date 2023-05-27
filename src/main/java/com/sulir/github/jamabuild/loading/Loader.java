@@ -3,11 +3,11 @@ package com.sulir.github.jamabuild.loading;
 import com.sulir.github.jamabuild.Project;
 
 public abstract class Loader {
-    protected static final String PROJECTS_DIR = "projects";
-
+    protected final String projectsDirectory;
     protected final String projectId;
 
-    public Loader(String projectId) {
+    public Loader(String projectsDirectory, String projectId) {
+        this.projectsDirectory = projectsDirectory;
         this.projectId = projectId;
     }
 

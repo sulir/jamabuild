@@ -10,28 +10,28 @@ import java.util.stream.Stream;
 
 public class Project {
     private final String id;
-    private final Path root;
+    private final Path directory;
     private Settings settings;
 
     public Project(String id, String directory) {
         this.id = id;
-        this.root = Path.of(directory);
+        this.directory = Path.of(directory);
     }
 
-    public Path getRoot() {
-        return root;
+    public Path getDirectory() {
+        return directory;
     }
 
     public Path getSource() {
-        return root.resolve("source");
+        return directory.resolve("source");
     }
 
     public Path getLog() {
-        return root.resolve("build.log");
+        return directory.resolve("build.log");
     }
 
     public Path getResultFile() {
-        return root.resolve("result.tsv");
+        return directory.resolve("result.tsv");
     }
 
     public boolean hasSourceFile(String pattern) {
@@ -48,7 +48,7 @@ public class Project {
 
     public void delete() {
         try {
-            FileUtils.deleteDirectory(root.toFile());
+            FileUtils.deleteDirectory(directory.toFile());
         } catch (IOException e) {
             e.printStackTrace();
         }

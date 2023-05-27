@@ -6,8 +6,8 @@ import org.eclipse.jgit.api.Git;
 import java.nio.file.Path;
 
 public class GitLoader extends Loader {
-    public GitLoader(String projectId) {
-        super(projectId);
+    public GitLoader(String projectsDirectory, String projectId) {
+        super(projectsDirectory, projectId);
     }
 
     @Override
@@ -29,6 +29,6 @@ public class GitLoader extends Loader {
     }
 
     private String getDirectory() {
-        return Path.of(PROJECTS_DIR, projectId.replaceAll("\\W", "_")).toString();
+        return Path.of(projectsDirectory, projectId.replaceAll("\\W", "_")).toString();
     }
 }

@@ -11,9 +11,11 @@ public class Main {
     public static final String PROJECTS_FILE = "projects.tsv";
 
     public static void main(String[] args) {
-        log.info("Starting JaMaBuild");
+        String rootDirectory = args.length > 0 ? args[0] : System.getProperty("user.dir");
+        log.info("Starting JaMaBuild in {}", rootDirectory);
+
         ProcessList processList = new ProcessList();
-        processList.addProjects(Path.of(PROJECTS_FILE));
-        processList.runAll();
+        processList.addProjects(Path.of(rootDirectory, PROJECTS_FILE));
+        processList.runAll(rootDirectory);
     }
 }

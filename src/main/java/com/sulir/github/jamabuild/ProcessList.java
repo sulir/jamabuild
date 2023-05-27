@@ -28,10 +28,10 @@ public class ProcessList {
         }
     }
 
-    public void runAll() {
+    public void runAll(String rootDirectory) {
         for (DockerProcess process : processes) {
             log.info("Project {}", process.getProjectId());
-            process.run();
+            process.run(rootDirectory);
         }
     }
 }

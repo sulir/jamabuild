@@ -20,7 +20,7 @@ public class BashScript implements Criterion {
         String[] command = new String[] {"bash", "-c", script};
 
         try {
-            Process process = Runtime.getRuntime().exec(command, null, project.getRoot().toFile());
+            Process process = Runtime.getRuntime().exec(command, null, project.getDirectory().toFile());
             process.waitFor();
             return process.exitValue() == 0;
         } catch (IOException | InterruptedException e) {

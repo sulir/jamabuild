@@ -16,30 +16,34 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Build {
     private static final Logger log = LoggerFactory.getLogger(Build.class);
+    private static final String SETTINGS_FILE = "jamabuild.yml";
 
+    private final String rootDirectory;
     private final String type;
     private final String projectId;
 
-    public Build(String type, String projectId) {
+    public Build(String rootDirectory, String type, String projectId) {
+        this.rootDirectory = rootDirectory;
         this.type = type;
         this.projectId = projectId;
     }
 
     public static void main(String[] args) {
         try {
-            new Build(args[0], args[1]).run(args[2]);
+            new Build(args[0], args[1], args[2]).run();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void run(String settingsFileName) throws Exception {
-        Settings settings = loadSettings(settingsFileName);
+    public void run() throws Exception {
+        Settings settings = loadSettings(Path.of(rootDirectory, SETTINGS_FILE).toString());
         Project project = loadProject(settings);
 
         List<Criterion> preExclude = loadExclude(settings, CriterionType.PRE_BUILD);
@@ -64,7 +68,7 @@ public class Build {
 
     private Project loadProject(Settings settings) throws Exception {
         log.info("Loading");
-        Loader loader = LoaderFactory.createLoader(type, projectId);
+        Loader loader = LoaderFactory.createLoader(rootDirectory, type, projectId);
         Project project = loader.load();
         project.setSettings(settings);
         return project;

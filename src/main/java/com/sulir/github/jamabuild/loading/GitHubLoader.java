@@ -5,8 +5,8 @@ import com.sulir.github.jamabuild.Project;
 public class GitHubLoader extends GitLoader {
     private static final String URL = "https://github.com/%s.git";
 
-    public GitHubLoader(String projectId) {
-        super(projectId);
+    public GitHubLoader(String projectsDirectory, String projectId) {
+        super(projectsDirectory, projectId);
     }
 
     @Override
