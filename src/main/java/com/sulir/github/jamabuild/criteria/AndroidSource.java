@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 @AllowedTypes(CriterionType.PRE_BUILD)
-public class Android implements Criterion {
+public class AndroidSource implements Criterion {
     private static final String CONTENT = "import android.";
 
     @Override
