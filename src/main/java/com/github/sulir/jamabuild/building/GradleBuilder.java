@@ -17,7 +17,8 @@ public class GradleBuilder extends Builder {
 
     @Override
     protected List<String> getBuildToolCommand() {
-        List<String> command = new ArrayList<>(List.of("gradle", "clean"));
+        String executable = project.hasSourceFile("gradlew") ? "./gradlew" : "gradle";
+        List<String> command = new ArrayList<>(List.of(executable, "clean"));
 
         if (project.getSettings().skipTests())
             command.add("assemble");
