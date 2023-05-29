@@ -24,19 +24,25 @@ public class Build {
     private static final Logger log = LoggerFactory.getLogger(Build.class);
     private static final String SETTINGS_FILE = "jamabuild.yml";
 
-    private final String rootDirectory;
     private final String type;
     private final String projectId;
+    private final String rootDirectory;
 
-    public Build(String rootDirectory, String type, String projectId) {
-        this.rootDirectory = rootDirectory;
+    public Build(String type, String projectId, String rootDirectory) {
         this.type = type;
         this.projectId = projectId;
+        this.rootDirectory = rootDirectory;
     }
 
     public static void main(String[] args) {
         try {
-            new Build(args[0], args[1], args[2]).run();
+            if (args.length < 2) {
+                System.err.println("Arguments: <type> <project_id> [root_directory]");
+                return;
+            }
+
+            String rootDirectory = args.length == 3 ? args[2] : System.getProperty("user.dir");
+            new Build(args[0], args[1], rootDirectory).run();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -14,6 +14,11 @@ public class ProcessList {
     private static final Logger log = LoggerFactory.getLogger(ProcessList.class);
 
     private final List<DockerProcess> processes = new ArrayList<>();
+    private final String rootDirectory;
+
+    public ProcessList(String rootDirectory) {
+        this.rootDirectory = rootDirectory;
+    }
 
     public void addProjects(Path projectFile) {
         try (Stream<String> lines = Files.lines(projectFile)) {
@@ -21,17 +26,17 @@ public class ProcessList {
                 String[] records = line.split("\t");
                 String type = records[0];
                 String id = records[1];
-                processes.add(new DockerProcess(type, id));
+                processes.add(new DockerProcess(type, id, rootDirectory));
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void runAll(String rootDirectory) {
+    public void runAll() {
         for (DockerProcess process : processes) {
             log.info("Project {}", process.getProjectId());
-            process.run(rootDirectory);
+            process.run();
         }
     }
 }

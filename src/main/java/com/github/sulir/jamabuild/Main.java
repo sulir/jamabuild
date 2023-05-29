@@ -14,8 +14,8 @@ public class Main {
         String rootDirectory = args.length > 0 ? args[0] : System.getProperty("user.dir");
         log.info("Starting JaMaBuild in {}", rootDirectory);
 
-        ProcessList processList = new ProcessList();
+        ProcessList processList = new ProcessList(rootDirectory);
         processList.addProjects(Path.of(rootDirectory, PROJECTS_FILE));
-        processList.runAll(rootDirectory);
+        processList.runAll();
     }
 }
