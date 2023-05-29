@@ -1,28 +1,22 @@
 package com.github.sulir.jamabuild;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.github.sulir.jamabuild.exclusion.CriteriaTester;
-import com.github.sulir.jamabuild.loading.Loader;
 import com.github.sulir.jamabuild.building.BuildResult;
 import com.github.sulir.jamabuild.building.Builder;
 import com.github.sulir.jamabuild.building.BuilderFactory;
+import com.github.sulir.jamabuild.exclusion.CriteriaTester;
 import com.github.sulir.jamabuild.exclusion.Criterion;
 import com.github.sulir.jamabuild.exclusion.CriterionFactory;
 import com.github.sulir.jamabuild.exclusion.CriterionType;
+import com.github.sulir.jamabuild.loading.Loader;
 import com.github.sulir.jamabuild.loading.LoaderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Build {
     private static final Logger log = LoggerFactory.getLogger(Build.class);
-    private static final String SETTINGS_FILE = "jamabuild.yml";
 
     private final String type;
     private final String projectId;
@@ -49,7 +43,7 @@ public class Build {
     }
 
     public void run() throws Exception {
-        Settings settings = loadSettings(Path.of(rootDirectory, SETTINGS_FILE).toString());
+        Settings settings = Settings.load(rootDirectory);
         Project project = loadProject(settings);
 
         List<Criterion> preExclude = loadExclude(settings, CriterionType.PRE_BUILD);
@@ -78,17 +72,6 @@ public class Build {
         Project project = loader.load();
         project.setSettings(settings);
         return project;
-    }
-
-    private Settings loadSettings(String settingsFileName) {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        Settings settings;
-        try(InputStream settingsFile = new FileInputStream(settingsFileName)) {
-            settings = mapper.readValue(settingsFile, Settings.class);
-        } catch (Exception e) {
-            settings = new Settings(null, null, null, null);
-        }
-        return settings;
     }
 
     private List<Criterion> loadExclude(Settings settings, CriterionType type) {

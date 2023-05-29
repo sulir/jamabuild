@@ -1,9 +1,9 @@
 package com.github.sulir.jamabuild.processes;
 
 import com.github.sulir.jamabuild.Build;
+import com.github.sulir.jamabuild.Settings;
 
 public class DockerProcess {
-    public static final String IMAGE = "sulir/jamabuild:master";
     private static final String CONTAINER_DIR = "/opt/data";
 
     private final String type;
@@ -29,8 +29,9 @@ public class DockerProcess {
     }
 
     private void executeDocker() {
+        String image = Settings.load(rootDirectory).dockerImage();
         String volume = rootDirectory + ":" + CONTAINER_DIR;
-        String[] command = new String[] {"docker", "run", "-iv", volume, IMAGE, type, projectId};
+        String[] command = new String[] {"docker", "run", "-iv", volume, image, type, projectId};
 
         new ConsoleProcess(command).run();
     }
