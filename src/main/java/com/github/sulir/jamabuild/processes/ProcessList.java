@@ -1,4 +1,4 @@
-package com.github.sulir.jamabuild;
+package com.github.sulir.jamabuild.processes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

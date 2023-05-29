@@ -1,6 +1,6 @@
-package com.github.sulir.jamabuild;
+package com.github.sulir.jamabuild.processes;
 
-import java.io.IOException;
+import com.github.sulir.jamabuild.Build;
 
 public class DockerProcess {
     public static final String IMAGE = "sulir/jamabuild:master";
@@ -22,25 +22,16 @@ public class DockerProcess {
 
     public void run() {
         if (System.getenv("DEBUG") == null) {
-            try {
-                executeDocker();
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
+            executeDocker();
         } else {
             Build.main(new String[] {type, projectId, rootDirectory});
         }
     }
 
-    private void executeDocker() throws IOException, InterruptedException {
+    private void executeDocker() {
         String volume = rootDirectory + ":" + CONTAINER_DIR;
         String[] command = new String[] {"docker", "run", "-iv", volume, IMAGE, type, projectId};
 
-        ProcessBuilder builder = new ProcessBuilder(command);
-        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        builder.redirectError(ProcessBuilder.Redirect.INHERIT);
-
-        Process process = builder.start();
-        process.waitFor();
+        new ConsoleProcess(command).run();
     }
 }

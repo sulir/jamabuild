@@ -1,5 +1,8 @@
 package com.github.sulir.jamabuild;
 
+import com.github.sulir.jamabuild.processes.ConsoleProcess;
+import com.github.sulir.jamabuild.processes.DockerProcess;
+import com.github.sulir.jamabuild.processes.ProcessList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +17,14 @@ public class Main {
         String rootDirectory = args.length > 0 ? args[0] : System.getProperty("user.dir");
         log.info("Starting JaMaBuild in {}", rootDirectory);
 
+        updateDockerImage();
+
         ProcessList processList = new ProcessList(rootDirectory);
         processList.addProjects(Path.of(rootDirectory, PROJECTS_FILE));
         processList.runAll();
+    }
+
+    private static void updateDockerImage() {
+        new ConsoleProcess(new String[] {"docker", "pull", DockerProcess.IMAGE}).run();
     }
 }
