@@ -21,7 +21,7 @@ public class DockerProcess {
     }
 
     public void run() {
-        if (System.getenv("JAMABUILD_DEBUG") == null) {
+        if (System.getenv("JAMABUILD_NO_DOCKER") == null) {
             executeDocker();
         } else {
             Build.main(new String[] {type, projectId, rootDirectory});

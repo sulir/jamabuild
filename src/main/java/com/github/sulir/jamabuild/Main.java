@@ -25,6 +25,7 @@ public class Main {
     }
 
     private static void updateDockerImage(Settings settings) {
-        new ConsoleProcess(new String[] {"docker", "pull", settings.dockerImage()}).run();
+        if (System.getenv("JAMABUILD_NO_UPDATE") == null)
+            new ConsoleProcess(new String[] {"docker", "pull", settings.dockerImage()}).run();
     }
 }
