@@ -1,9 +1,8 @@
 package com.github.sulir.jamabuild.criteria;
 
 import com.github.sulir.jamabuild.Project;
-import com.github.sulir.jamabuild.exclusion.AllowedTypes;
-import com.github.sulir.jamabuild.exclusion.Criterion;
-import com.github.sulir.jamabuild.exclusion.CriterionType;
+import com.github.sulir.jamabuild.filtering.AllowedPhases;
+import com.github.sulir.jamabuild.filtering.Criterion;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
@@ -11,9 +10,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-@AllowedTypes(CriterionType.PRE_BUILD)
-public class AndroidSource implements Criterion {
+@AllowedPhases(Criterion.Phase.PRE_BUILD)
+public class AndroidSource extends Criterion {
     private static final String CONTENT = "import android.";
+
+    public AndroidSource(Phase phase, Type type) {
+        super(phase, type);
+    }
 
     @Override
     public boolean isMet(Project project) {

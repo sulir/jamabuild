@@ -3,17 +3,12 @@ package com.github.sulir.jamabuild;
 import com.github.sulir.jamabuild.building.BuildResult;
 import com.github.sulir.jamabuild.building.Builder;
 import com.github.sulir.jamabuild.building.BuilderFactory;
-import com.github.sulir.jamabuild.exclusion.CriteriaTester;
-import com.github.sulir.jamabuild.exclusion.Criterion;
-import com.github.sulir.jamabuild.exclusion.CriterionFactory;
-import com.github.sulir.jamabuild.exclusion.CriterionType;
+import com.github.sulir.jamabuild.filtering.Criterion;
+import com.github.sulir.jamabuild.filtering.ProjectFilter;
 import com.github.sulir.jamabuild.loading.Loader;
 import com.github.sulir.jamabuild.loading.LoaderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Build {
     private static final Logger log = LoggerFactory.getLogger(Build.class);
@@ -45,15 +40,14 @@ public class Build {
     public void run() throws Exception {
         Settings settings = Settings.load(rootDirectory);
         Project project = loadProject(settings);
+        ProjectFilter projectFilter = ProjectFilter.load(settings);
 
-        List<Criterion> preExclude = loadExclude(settings, CriterionType.PRE_BUILD);
-        if (new CriteriaTester(preExclude, project).anyMatches())
+        if (projectFilter.exclusionMatches(project, Criterion.Phase.PRE_BUILD))
             return;
 
         build(project);
 
-        List<Criterion> postExclude = loadExclude(settings, CriterionType.POST_BUILD);
-        if (new CriteriaTester(postExclude, project).anyMatches())
+        if (projectFilter.exclusionMatches(project, Criterion.Phase.POST_BUILD))
             return;
 
         log.info("Finished");
@@ -72,20 +66,5 @@ public class Build {
         Project project = loader.load();
         project.setSettings(settings);
         return project;
-    }
-
-    private List<Criterion> loadExclude(Settings settings, CriterionType type) {
-        CriterionFactory exclude = new CriterionFactory(type);
-        List<Criterion> list = new ArrayList<>();
-        String[] criteria = type == CriterionType.PRE_BUILD ? settings.preExclude() : settings.postExclude();
-
-        for (String criterion : criteria) {
-            try {
-                list.add(exclude.createCriterion(criterion));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return list;
     }
 }

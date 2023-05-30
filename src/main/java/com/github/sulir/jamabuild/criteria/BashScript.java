@@ -1,17 +1,17 @@
 package com.github.sulir.jamabuild.criteria;
 
-import com.github.sulir.jamabuild.exclusion.AllowedTypes;
-import com.github.sulir.jamabuild.exclusion.Criterion;
 import com.github.sulir.jamabuild.Project;
-import com.github.sulir.jamabuild.exclusion.CriterionType;
+import com.github.sulir.jamabuild.filtering.AllowedPhases;
+import com.github.sulir.jamabuild.filtering.Criterion;
 
 import java.io.IOException;
 
-@AllowedTypes({CriterionType.PRE_BUILD, CriterionType.POST_BUILD})
-public class BashScript implements Criterion {
+@AllowedPhases({Criterion.Phase.PRE_BUILD, Criterion.Phase.POST_BUILD})
+public class BashScript extends Criterion {
     private final String script;
 
-    public BashScript(String script) {
+    public BashScript(Phase phase, Type type, String script) {
+        super(phase, type);
         this.script = script;
     }
 

@@ -11,7 +11,9 @@ public record Settings(
         String dockerImage,
         String timeout,
         Boolean skipTests,
+        String[] preInclude,
         String[] preExclude,
+        String[] postInclude,
         String[] postExclude
 ) {
     private static final String FILE_NAME = "jamabuild.yml";
@@ -30,7 +32,7 @@ public record Settings(
     }
 
     public Settings() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, null, null);
     }
 
     @Override
@@ -49,8 +51,18 @@ public record Settings(
     }
 
     @Override
+    public String[] preInclude() {
+        return preInclude == null ? new String[0] : preInclude;
+    }
+
+    @Override
     public String[] preExclude() {
         return preExclude == null ? new String[0] : preExclude;
+    }
+
+    @Override
+    public String[] postInclude() {
+        return postInclude == null ? new String[0] : postInclude;
     }
 
     @Override
