@@ -53,18 +53,27 @@ public class Build {
         log.info("Finished");
     }
 
-    private void build(Project project) {
-        log.info("Building");
-        Builder builder = BuilderFactory.createBuilder(project);
-        BuildResult result = builder.runBuild();
-        result.write(project.getResultFile());
-    }
-
     private Project loadProject(Settings settings) throws Exception {
         log.info("Loading");
         Loader loader = LoaderFactory.createLoader(rootDirectory, type, projectId);
         Project project = loader.load();
         project.setSettings(settings);
         return project;
+    }
+
+    private void build(Project project) {
+        log.info("Building");
+        Builder builder = BuilderFactory.createBuilder(project);
+
+        BuildResult result = builder.runBuild();
+        result.write(project.getResultFile());
+
+        if (result.isSuccessful()) {
+            log.info("Copying JARs");
+            builder.copyJARs();
+
+            log.info("Copying dependencies");
+            builder.copyDependencies();
+        }
     }
 }

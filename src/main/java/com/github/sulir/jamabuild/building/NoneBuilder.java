@@ -18,4 +18,14 @@ public class NoneBuilder extends Builder{
     protected List<String> getBuildToolCommand() {
         return List.of("false");
     }
+
+    @Override
+    public void copyJARs() {
+
+    }
+
+    @Override
+    public void copyDependencies() {
+
+    }
 }

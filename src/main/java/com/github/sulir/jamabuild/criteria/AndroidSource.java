@@ -20,7 +20,7 @@ public class AndroidSource extends Criterion {
 
     @Override
     public boolean isMet(Project project) {
-        try (Stream<Path> files = Files.walk(project.getSource())) {
+        try (Stream<Path> files = Files.walk(project.getSourceDir())) {
             return files.filter(path -> path.toString().endsWith(".java"))
                     .anyMatch(path -> {
                         try {

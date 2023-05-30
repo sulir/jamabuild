@@ -13,6 +13,10 @@ public class BuildResult {
         this.exitCode = exitValue;
     }
 
+    public boolean isSuccessful() {
+        return exitCode == 0;
+    }
+
     public void write(Path file) {
         try (PrintWriter writer = new PrintWriter(file.toFile())) {
             writer.println("tool\texit_code");

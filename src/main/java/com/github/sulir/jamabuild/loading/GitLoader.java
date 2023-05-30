@@ -18,10 +18,10 @@ public class GitLoader extends Loader {
     protected Project gitClone(String url) throws Exception {
         Project project = new Project(projectId, getDirectory());
 
-        if (!project.getSource().toFile().exists()) {
+        if (!project.getSourceDir().toFile().exists()) {
             Git.cloneRepository()
                     .setURI(url)
-                    .setDirectory(project.getSource().toFile())
+                    .setDirectory(project.getSourceDir().toFile())
                     .call();
         }
 

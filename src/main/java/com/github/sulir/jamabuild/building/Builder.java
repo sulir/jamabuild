@@ -21,8 +21,8 @@ public abstract class Builder {
         log.info("Command: {}", String.join(" ", command));
         ProcessBuilder builder = new ProcessBuilder(command);
 
-        builder.directory(project.getSource().toFile());
-        builder.redirectOutput(project.getLog().toFile());
+        builder.directory(project.getSourceDir().toFile());
+        builder.redirectOutput(project.getLogFile().toFile());
         builder.redirectErrorStream(true);
 
         try {
@@ -43,4 +43,8 @@ public abstract class Builder {
 
     protected abstract String getToolName();
     protected abstract List<String> getBuildToolCommand();
+
+    public abstract void copyJARs();
+
+    public abstract void copyDependencies();
 }

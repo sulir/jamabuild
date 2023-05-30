@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class Project {
@@ -22,11 +24,11 @@ public class Project {
         return directory;
     }
 
-    public Path getSource() {
+    public Path getSourceDir() {
         return directory.resolve("source");
     }
 
-    public Path getLog() {
+    public Path getLogFile() {
         return directory.resolve("build.log");
     }
 
@@ -34,15 +36,51 @@ public class Project {
         return directory.resolve("result.tsv");
     }
 
-    public boolean hasSourceFile(String pattern) {
-        String glob = "glob:" + getSource().resolve(pattern);
-        PathMatcher matcher = getSource().getFileSystem().getPathMatcher(glob);
+    public Path getJARsDir() {
+        return directory.resolve("jars");
+    }
 
-        try (Stream<Path> files = Files.walk(getSource())) {
-            return files.anyMatch(matcher::matches);
+    public Path getDependenciesDir() {
+        return directory.resolve("deps");
+    }
+
+    public List<Path> getSourceFiles(String pattern) {
+        PathMatcher matcher = getPathMatcher(pattern);
+
+        return streamFileTree().filter(Files::isRegularFile)
+                .filter(matcher::matches)
+                .toList();
+    }
+
+    private PathMatcher getPathMatcher(String pattern) {
+        String glob = "glob:" + getSourceDir().resolve(pattern);
+        return getSourceDir().getFileSystem().getPathMatcher(glob);
+    }
+
+    private Stream<Path> streamFileTree() {
+        try {
+            return Files.walk(getSourceDir());
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return Stream.empty();
+        }
+    }
+
+    public boolean hasSourceFile(String pattern) {
+        PathMatcher matcher = getPathMatcher(pattern);
+
+        return streamFileTree().filter(Files::isRegularFile)
+                .anyMatch(matcher::matches);
+    }
+
+    public void copySourceFiles(String pattern, Path targetDir) {
+        for (Path file : getSourceFiles(pattern)) {
+            try {
+                Files.createDirectories(targetDir);
+                Files.copy(file, targetDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
