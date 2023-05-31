@@ -3,6 +3,7 @@ package com.github.sulir.jamabuild.filtering;
 import com.github.sulir.jamabuild.criteria.AndroidSource;
 import com.github.sulir.jamabuild.criteria.BashScript;
 import com.github.sulir.jamabuild.criteria.SourceFile;
+import com.github.sulir.jamabuild.criteria.UnresolvedReferences;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -12,7 +13,8 @@ public class CriterionFactory {
     private static final List<Class<? extends Criterion>> criteria = List.of(
             AndroidSource.class,
             BashScript.class,
-            SourceFile.class);
+            SourceFile.class,
+            UnresolvedReferences.class);
     private final Criterion.Phase phase;
     private final Criterion.Type type;
 
