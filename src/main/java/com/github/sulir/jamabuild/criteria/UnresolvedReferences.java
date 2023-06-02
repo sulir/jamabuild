@@ -28,8 +28,7 @@ public class UnresolvedReferences extends Criterion {
         String javaVersion = System.getProperty("java.version");
         String majorVersion = javaVersion.startsWith("1.") ? javaVersion.substring(2, 3) : javaVersion.split("\\.")[0];
 
-
-        List<String> jdepsCommand = new ArrayList<>(Arrays.asList("jdeps", "-summary" ,"--multi-release", majorVersion, "-recursive", "--module-path", depsDir.toString()));
+        List<String> jdepsCommand = new ArrayList<>(Arrays.asList("jdeps", "-summary", "--ignore-missing-deps", "--multi-release", majorVersion, "-recursive", "--module-path", depsDir.toString()));
         try (Stream<Path> pathsJars = Files.walk(jarsDir)
                 .filter(Files::isRegularFile)
                 .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
