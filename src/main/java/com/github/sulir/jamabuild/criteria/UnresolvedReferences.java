@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @AllowedPhases(Criterion.Phase.POST_BUILD)
@@ -24,16 +26,11 @@ public class UnresolvedReferences extends Criterion {
         Path jarsDir = project.getJARsDir();
 
         try (Stream<Path> paths = Files.walk(jarsDir)) {
-            return paths.anyMatch(this::hasUnresolvedReferences);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private boolean hasUnresolvedReferences(Path pathToJarFile) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder(Arrays.asList("jdeps", "-R", pathToJarFile.toString()));
+            List<String> jdepsCommand = Arrays.asList("jdeps", "-R");
+            List<String> jarFiles = paths.map(Path::toString).collect(Collectors.toList());
+            jdepsCommand.addAll(jarFiles);
+            System.out.println(">>>> " + jdepsCommand);
+            ProcessBuilder pb = new ProcessBuilder(jdepsCommand);
             Process p = pb.start();
             p.waitFor();
 
@@ -48,7 +45,6 @@ public class UnresolvedReferences extends Criterion {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
         return false;
     }
 }
