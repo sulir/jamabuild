@@ -23,16 +23,30 @@ public class UnresolvedReferences extends Criterion {
     @Override
     public boolean isMet(Project project) {
         Path jarsDir = project.getJARsDir();
+        Path depsDir = project.getDependenciesDir();
 
-        List<String> jdepsCommand = new ArrayList<>(Arrays.asList("jdeps", "-R"));
-        try (Stream<Path> paths = Files.walk(jarsDir).filter(Files::isRegularFile)) {
-            jdepsCommand.addAll(paths.map(Path::toString).toList());
+        String javaVersion = System.getProperty("java.version");
+        String majorVersion = javaVersion.startsWith("1.") ? javaVersion.substring(2, 3) : javaVersion.split("\\.")[0];
+
+
+        List<String> jdepsCommand = new ArrayList<>(Arrays.asList("jdeps", "-summary" ,"--multi-release", majorVersion, "-recursive", "--module-path", depsDir.toString()));
+        try (Stream<Path> pathsJars = Files.walk(jarsDir)
+                .filter(Files::isRegularFile)
+                .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
+             Stream<Path> pathsDeps = Files.walk(depsDir)
+                     .filter(Files::isRegularFile)
+                     .filter(p -> p.toString().toLowerCase().endsWith(".jar"))) {
+            List<String> allJarFiles = Stream.concat(pathsJars, pathsDeps)
+                    .map(Path::toString)
+                    .toList();
+
+            jdepsCommand.addAll(allJarFiles);
 
             ProcessBuilder pb = new ProcessBuilder(jdepsCommand);
             // using this temp file to prevent hanging on full output stream
             File outputFile = project.getDirectory().resolve("processOutput.txt").toFile();
             pb.redirectOutput(outputFile);
-            pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+            pb.redirectError(outputFile);
             Process p = pb.start();
             p.waitFor();
 
