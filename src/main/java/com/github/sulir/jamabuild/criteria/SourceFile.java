@@ -14,16 +14,11 @@ public class SourceFile extends Criterion {
     private final String globPattern;
     private final String contentToSearch;
 
-    public SourceFile(Phase phase, Type type, String globPattern) {
+    public SourceFile(Phase phase, Type type, String parameter) {
         super(phase, type);
-        this.globPattern = globPattern;
-        this.contentToSearch = null;
-    }
-
-    public SourceFile(Phase phase, Type type, String globPattern, String contentToSearch) {
-        super(phase, type);
-        this.globPattern = globPattern;
-        this.contentToSearch = contentToSearch;
+        String[] parameters = parameter.split(" ", 2);
+        this.globPattern = parameters[0];
+        this.contentToSearch = parameters.length > 1 ? parameters[1] : null;;
     }
 
     @Override
