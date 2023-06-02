@@ -18,7 +18,7 @@ public class SourceFile extends Criterion {
         super(phase, type);
         String[] parameters = parameter.split(" ", 2);
         this.globPattern = parameters[0];
-        this.contentToSearch = parameters.length > 1 ? parameters[1] : null;;
+        this.contentToSearch = parameters.length > 1 ? parameters[1] : null;
     }
 
     @Override

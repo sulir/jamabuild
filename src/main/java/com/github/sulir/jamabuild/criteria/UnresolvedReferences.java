@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @AllowedPhases(Criterion.Phase.POST_BUILD)
@@ -20,14 +19,14 @@ public class UnresolvedReferences extends Criterion {
         super(phase, type);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public boolean isMet(Project project) {
         Path jarsDir = project.getJARsDir();
 
-        List<String> jdepsCommand = new ArrayList<String>();
-        jdepsCommand.addAll(Arrays.asList("jdeps", "-R"));
+        List<String> jdepsCommand = new ArrayList<>(Arrays.asList("jdeps", "-R"));
         try (Stream<Path> paths = Files.walk(jarsDir).filter(Files::isRegularFile)) {
-            jdepsCommand.addAll(paths.map(Path::toString).collect(Collectors.toList()));
+            jdepsCommand.addAll(paths.map(Path::toString).toList());
 
             ProcessBuilder pb = new ProcessBuilder(jdepsCommand);
             // using this temp file to prevent hanging on full output stream
