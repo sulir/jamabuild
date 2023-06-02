@@ -37,7 +37,7 @@ public class SourceFile extends Criterion {
     }
 
     private boolean matchesGlobAndContent(Path path) {
-        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
+        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/" + globPattern);
         if (matcher.matches(path)) {
             if (contentToSearch != null) {
                 try {
