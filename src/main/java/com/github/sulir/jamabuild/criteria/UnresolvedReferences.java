@@ -4,11 +4,10 @@ import com.github.sulir.jamabuild.Project;
 import com.github.sulir.jamabuild.filtering.AllowedPhases;
 import com.github.sulir.jamabuild.filtering.Criterion;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,23 +24,31 @@ public class UnresolvedReferences extends Criterion {
     public boolean isMet(Project project) {
         Path jarsDir = project.getJARsDir();
 
-        try (Stream<Path> paths = Files.walk(jarsDir)) {
-            List<String> jdepsCommand = Arrays.asList("jdeps", "-R");
-            List<String> jarFiles = paths.map(Path::toString).collect(Collectors.toList());
-            jdepsCommand.addAll(jarFiles);
-            System.out.println(">>>> " + jdepsCommand);
+        List<String> jdepsCommand = new ArrayList<String>();
+        jdepsCommand.addAll(Arrays.asList("jdeps", "-R"));
+        try (Stream<Path> paths = Files.walk(jarsDir).filter(Files::isRegularFile)) {
+            jdepsCommand.addAll(paths.map(Path::toString).collect(Collectors.toList()));
+
             ProcessBuilder pb = new ProcessBuilder(jdepsCommand);
+            // using this temp file to prevent hanging on full output stream
+            File outputFile = project.getDirectory().resolve("processOutput.txt").toFile();
+            pb.redirectOutput(outputFile);
+            pb.redirectError(ProcessBuilder.Redirect.INHERIT);
             Process p = pb.start();
             p.waitFor();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader reader = new BufferedReader(new FileReader(outputFile));
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 if (line.contains("not found")) {
+                    reader.close();
+                    outputFile.delete();
                     return true;
                 }
             }
-            br.close();
+
+            reader.close();
+            outputFile.delete();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
