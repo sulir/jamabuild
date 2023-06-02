@@ -29,7 +29,7 @@ public class SourceFile extends Criterion {
     @Override
     public boolean isMet(Project project) {
         try (Stream<Path> paths = Files.walk(project.getSourceDir())) {
-            return paths.anyMatch(path -> matchesGlobAndContent(path));
+            return paths.anyMatch(this::matchesGlobAndContent);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
