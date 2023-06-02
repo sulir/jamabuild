@@ -7,8 +7,10 @@ import com.github.sulir.jamabuild.filtering.Criterion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 @AllowedPhases(Criterion.Phase.POST_BUILD)
 public class UnresolvedReferences extends Criterion {
@@ -21,8 +23,17 @@ public class UnresolvedReferences extends Criterion {
     public boolean isMet(Project project) {
         Path jarsDir = project.getJARsDir();
 
+        try (Stream<Path> paths = Files.walk(jarsDir)) {
+            return paths.anyMatch(this::hasUnresolvedReferences);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean hasUnresolvedReferences(Path pathToJarFile) {
         try {
-            ProcessBuilder pb = new ProcessBuilder(Arrays.asList("jdeps", "-verbose", "-R", jarsDir.toString()));
+            ProcessBuilder pb = new ProcessBuilder(Arrays.asList("jdeps", "-R", pathToJarFile.toString()));
             Process p = pb.start();
             p.waitFor();
 
