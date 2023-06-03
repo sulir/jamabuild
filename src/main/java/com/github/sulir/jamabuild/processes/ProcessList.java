@@ -33,10 +33,20 @@ public class ProcessList {
         }
     }
 
-    public void runAll() {
+    public List<DockerProcess> getProcesses() {
+        return processes;
+    }
+
+    public void runAll(BuildingState state) {
         for (DockerProcess process : processes) {
-            log.info("Project {}", process.getProjectId());
-            process.run();
+            if (state.shouldSkipProject(process)) {
+                log.info("Skipping project {} as it was built in previous session", process.getProjectId());
+            } else {
+                log.info("Project {}", process.getProjectId());
+                process.run();
+                state.didBuildProject(process);
+            }
         }
+        state.didBuildAllProjects();
     }
 }

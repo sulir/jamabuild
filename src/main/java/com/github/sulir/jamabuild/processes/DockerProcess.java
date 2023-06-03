@@ -20,6 +20,10 @@ public class DockerProcess {
         return projectId;
     }
 
+    public String getProjectType() {
+        return type;
+    }
+
     public void run() {
         if (System.getenv("JAMABUILD_NO_DOCKER") == null) {
             executeDocker();
