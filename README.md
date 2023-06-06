@@ -49,9 +49,22 @@ The currently supported options are:
 - `preInclude`, `preExclude` - lists of criteria to test on the project before it is built. If at least one criterion from `preInclude` is not met or at least one `preExclude` criterion is met, the project is excluded and deleted.
 - `postInclude`, `postExclude` - similar to the previous options but executed after each project's build process.
 
+## Filtering Criteria
+
+Each inclusion and exclusion criterion in the configuration file consists of the criterion name and an optional parameter, separated by space. The currently supported pre-build filtering criteria are:
+- `AndroidSource`: searches for the import of Android API in Java source files.
+- `BashScript script_text`: executes the given Bash script. The criterion is met if its exit value is zero.
+- `SourceFile pattern text`: the criterion is met if at leas one file matching the given glob pattern is present in the source tree of the project. If specified, the given text must be also contained in at leas one matched file.
+
+Here is a list of post-build criteria:
+- `BashScript script_text`: exactly the same as the pre-build criterion but executed after the build.
+- `UnresolvedReferences`: searches for unresolved references inside the project and dependency JARs using the `jdeps` tool. Ths criterion is met if at least one such reference was found.
+
+Custom criteria can be implemented by extending the class [Criterion](src/main/java/com/github/sulir/jamabuild/filtering/Criterion.java).
+
 ## Directory Structure
 
-The root data path has the following structure:
+JaMaBuild follows the "convention over configuration" principle. The root data path has the following structure:
 
 ```
 projects.tsv
@@ -69,4 +82,10 @@ projects/
         ...
 ```
 
-More details will be added during the next few days.
+The directory name for each project is automatically derived from its ID/URL. The `deps` directory contains dependency JARs, and `jars` contains the output artifacts (JARs) of the project itself. The files `build.log` represents a complete textual log of the build process. The file `results.tsv` contains the name of the used build tool and the exit code, e.g.:
+<pre>
+tool&#9;exit_code
+Maven&#9;0
+</pre>
+
+A screencast demonstrating the tool usage will be added in near future.
