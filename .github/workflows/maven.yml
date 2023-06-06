@@ -1,8 +1,10 @@
 name: Publish package as JAR to GitHub Packages
+
 on:
   push:
     branches:
       - master
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -22,4 +24,4 @@ jobs:
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
-          GITHUB_TOKEN: ${{ secretes.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
