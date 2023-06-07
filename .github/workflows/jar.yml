@@ -28,6 +28,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: snapshot
           file: target/jamabuild.jar
           prerelease: true
           overwrite: true
