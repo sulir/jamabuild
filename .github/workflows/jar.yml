@@ -10,8 +10,10 @@ jobs:
     name: Build and upload JAR
     runs-on: ubuntu-latest
     steps:
-      - name: Build
+      - name: Check out
         uses: actions/checkout@v3
+
+      - name: Build
         run: mvn clean package
 
       - name: Upload
