@@ -13,6 +13,12 @@ jobs:
       - name: Check out
         uses: actions/checkout@v3
 
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Build
         run: mvn clean package
 
