@@ -10,6 +10,8 @@ JamaBuild requires:
 - Java Development Kit >= 17
 - Docker
 
+You can build the project from source using `mvn package` or [download a pre-built JAR snapshot](https://github.com/sulir/jamabuild/releases/download/snapshot/jamabuild.jar).
+
 ## Basic Usage
 
 First, create an empty directory - we will call it the root data directory. In it, create the main input file, `projects.tsv`, with a list of projects to build. Here is a short example of its contents:
