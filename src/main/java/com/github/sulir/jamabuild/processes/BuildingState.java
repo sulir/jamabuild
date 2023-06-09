@@ -1,25 +1,21 @@
 package com.github.sulir.jamabuild.processes;
 
 import com.github.sulir.jamabuild.Settings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BuildingState {
-    private static final Logger log = LoggerFactory.getLogger(BuildingState.class);
 
     private static final String FILE_NAME = ".state";
 
     private final String rootDirectory;
 
-    private List<String> alreadyBuiltProjectsLines;
+    private final List<String> alreadyBuiltProjectsLines;
 
     public BuildingState(String rootDirectory) {
         this.rootDirectory = rootDirectory;
@@ -45,8 +41,7 @@ public class BuildingState {
         String processLine = process.getProjectType() + "\t" + process.getProjectId();
         Path stateFile = Path.of(rootDirectory, FILE_NAME);
         try {
-            List<String> processLineToWrite = Arrays.asList(processLine);
-            Files.write(stateFile, processLineToWrite, StandardOpenOption.APPEND);
+            Files.write(stateFile, List.of(processLine), StandardOpenOption.APPEND);
         } catch (IOException e) {
             // should we report this?
         }
@@ -61,7 +56,9 @@ public class BuildingState {
         }
     }
 
-    public static BuildingState getBuildingStateFor(String rootDirectory, ProcessList currentProcessList, Settings settings) {
+    public static BuildingState getBuildingStateFor(String rootDirectory,
+                                                    ProcessList currentProcessList,
+                                                    Settings settings) {
         int settingsHash = settings.hashCode();
 
         Path stateFile = Path.of(rootDirectory, FILE_NAME);
@@ -89,15 +86,15 @@ public class BuildingState {
         int settingsHash = settings.hashCode();
         Path stateFile = Path.of(rootDirectory, FILE_NAME);
         try {
-            List<String> settingsHashToWrite = Arrays.asList(String.valueOf(settingsHash));
-            Files.write(stateFile, settingsHashToWrite);
+            Files.write(stateFile, List.of(String.valueOf(settingsHash)));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         return new BuildingState(rootDirectory);
     }
 
-    private static boolean isStateFileCompatibleWithCurrentProjectsConfiguration(List<String> processedProjectsLines, ProcessList currentProcessList) {
+    private static boolean isStateFileCompatibleWithCurrentProjectsConfiguration(List<String> processedProjectsLines,
+                                                                                 ProcessList currentProcessList) {
         List<DockerProcess> currentProcesses = currentProcessList.getProcesses();
         if (processedProjectsLines.isEmpty() || processedProjectsLines.size() >= currentProcesses.size()) {
             return false;
