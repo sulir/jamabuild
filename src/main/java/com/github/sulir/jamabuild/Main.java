@@ -2,6 +2,7 @@ package com.github.sulir.jamabuild;
 
 import com.github.sulir.jamabuild.processes.ConsoleProcess;
 import com.github.sulir.jamabuild.processes.ProcessList;
+import com.github.sulir.jamabuild.processes.BuildingState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,8 @@ public class Main {
 
         ProcessList processList = new ProcessList(rootDirectory);
         processList.addProjects(Path.of(rootDirectory, PROJECTS_FILE));
-        processList.runAll();
+        BuildingState state = BuildingState.getBuildingStateFor(rootDirectory, processList, settings);
+        processList.runAll(state);
     }
 
     private static void updateDockerImage(Settings settings) {
