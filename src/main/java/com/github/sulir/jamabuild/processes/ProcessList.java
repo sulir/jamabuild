@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,19 @@ public class ProcessList {
         try (Stream<String> lines = Files.lines(projectFile)) {
             lines.forEachOrdered(line -> {
                 String[] records = line.split("\t");
-                String type = records[0];
-                String id = records[1];
-                processes.add(new DockerProcess(type, id, rootDirectory));
+
+                if (records.length == 2) {
+                    String type = records[0];
+                    String id = records[1];
+                    processes.add(new DockerProcess(type, id, rootDirectory));
+                } else {
+                    log.warn("Invalid line in {}: {}", projectFile, line);
+                    log.warn("Please see README for information on the project list format");
+                }
             });
+        } catch (NoSuchFileException e) {
+            log.error("File {} not found", projectFile);
+            log.error("Please create this file with a list of projects to build");
         } catch (IOException e) {
             e.printStackTrace();
         }

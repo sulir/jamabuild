@@ -9,7 +9,7 @@ public class ConsoleProcess {
         this.command = command;
     }
 
-    public void run() {
+    public int run() {
         try {
             ProcessBuilder builder = new ProcessBuilder(command);
             builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
@@ -17,8 +17,10 @@ public class ConsoleProcess {
 
             Process process = builder.start();
             process.waitFor();
+            return process.exitValue();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            return -1;
         }
     }
 }

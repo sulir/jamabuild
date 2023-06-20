@@ -8,7 +8,7 @@ The tool supports various project sources (local, Git, GitHub), inclusion and ex
 
 JamaBuild requires:
 - Java Development Kit >= 17
-- Docker
+- Docker (preferably in [rootless mode](https://docs.docker.com/engine/security/rootless/) if on Linux)
 
 You can build the project from source using `mvn package` or [download a pre-built JAR snapshot](https://github.com/sulir/jamabuild/releases/download/snapshot/jamabuild.jar).
 
