@@ -56,7 +56,7 @@ The currently supported options are:
 Each inclusion and exclusion criterion in the configuration file consists of the criterion name and an optional parameter, separated by space. The currently supported pre-build filtering criteria are:
 - `AndroidSource`: searches for the import of Android API in Java source files.
 - `BashScript script_text`: executes the given Bash script. The criterion is met if its exit value is zero.
-- `SourceFile pattern text`: the criterion is met if at leas one file matching the given glob pattern is present in the source tree of the project. If specified, the given text must be also contained in at leas one matched file.
+- `SourceFile pattern text`: the criterion is met if at least one file matching the given glob pattern is present in the source tree of the project. If specified, the given text must be also contained in at least one matched file.
 
 Here is a list of post-build criteria:
 - `BashScript script_text`: exactly the same as the pre-build criterion but executed after the build.
