@@ -58,7 +58,6 @@
             <version>1.9.2</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
