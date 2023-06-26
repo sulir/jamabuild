@@ -4,13 +4,15 @@ import com.github.sulir.jamabuild.Project;
 import com.github.sulir.jamabuild.filtering.AllowedPhases;
 import com.github.sulir.jamabuild.filtering.Criterion;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @AllowedPhases(Criterion.Phase.POST_BUILD)
 public class UnresolvedReferences extends Criterion {
@@ -21,38 +23,11 @@ public class UnresolvedReferences extends Criterion {
 
     @Override
     public boolean isMet(Project project) {
-        Path jarsDir = project.getJARsDir();
-        Path dependenciesDir = project.getDependenciesDir();
-
-        if (Files.exists(jarsDir)) {
-            if (Files.exists(dependenciesDir)) {
-                try (Stream<Path> jarsPaths = Files.walk(jarsDir)
-                        .filter(Files::isRegularFile)
-                        .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
-                     Stream<Path> dependenciesPaths = Files.walk(dependenciesDir)
-                             .filter(Files::isRegularFile)
-                             .filter(p -> p.toString().toLowerCase().endsWith(".jar"))) {
-                    List<String> allJarFiles = Stream.concat(jarsPaths, dependenciesPaths)
-                            .map(Path::toString)
-                            .toList();
-
-                    return hasUnresolvedReferencesInJARs(allJarFiles, dependenciesDir, project);
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try (Stream<Path> jarsPaths = Files.walk(jarsDir)
-                        .filter(Files::isRegularFile)
-                        .filter(p -> p.toString().toLowerCase().endsWith(".jar"))) {
-                    List<String> allJarFiles = jarsPaths
-                            .map(Path::toString)
-                            .toList();
-
-                    return hasUnresolvedReferencesInJARs(allJarFiles, null, project);
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        try {
+            List<String> allJarFiles = project.getJARsAndDependencies();
+            return hasUnresolvedReferencesInJARs(allJarFiles, project.getDependenciesDir(), project);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -61,6 +36,10 @@ public class UnresolvedReferences extends Criterion {
     private boolean hasUnresolvedReferencesInJARs(List<String> allJarFiles,
                                                   Path dependenciesDir,
                                                   Project project) throws IOException, InterruptedException {
+        if (allJarFiles.isEmpty()) {
+            return false;
+        }
+
         String javaVersion = System.getProperty("java.version");
         String majorVersion = javaVersion.startsWith("1.")
                 ? javaVersion.substring(2, 3)
@@ -68,7 +47,7 @@ public class UnresolvedReferences extends Criterion {
 
         List<String> jdepsCommand = new ArrayList<>(Arrays.asList("jdeps", "-summary", "--ignore-missing-deps",
                 "--multi-release", majorVersion, "-recursive"));
-        if (dependenciesDir != null) {
+        if (Files.exists(dependenciesDir)) {
             jdepsCommand.addAll(List.of("--module-path", dependenciesDir.toString()));
         }
         jdepsCommand.addAll(allJarFiles);

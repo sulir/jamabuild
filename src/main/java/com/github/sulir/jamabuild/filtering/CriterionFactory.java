@@ -11,6 +11,7 @@ public class CriterionFactory {
             AndroidSource.class,
             BashScript.class,
             FailedBuild.class,
+            NativeMethods.class,
             SourceFile.class,
             UnresolvedReferences.class);
     private final Criterion.Phase phase;
