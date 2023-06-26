@@ -3,21 +3,17 @@ package com.github.sulir.jamabuild.criteria;
 import com.github.sulir.jamabuild.Project;
 import com.github.sulir.jamabuild.filtering.AllowedPhases;
 import com.github.sulir.jamabuild.filtering.Criterion;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Enumeration;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 @AllowedPhases(Criterion.Phase.POST_BUILD)
 public class NativeMethods extends Criterion {
@@ -28,34 +24,12 @@ public class NativeMethods extends Criterion {
 
     @Override
     public boolean isMet(Project project) {
-        Path jarsDir = project.getJARsDir();
-        Path dependenciesDir = project.getDependenciesDir();
-        try (Stream<Path> jarPaths = prepareJarsPathsFrom(jarsDir, dependenciesDir)) {
-            List<String> allJarFiles = jarPaths
-                    .map(Path::toString)
-                    .toList();
+        try {
+            List<String> allJarFiles = project.getJARsAndDependencies();
             return hasNativeMethodCallInJARs(allJarFiles);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    private Stream<Path> prepareJarsPathsFrom(Path jarsDir, Path dependenciesDir) throws IOException {
-        Stream<Path> paths = Stream.empty();
-        paths = appendJarsFromDir(jarsDir, paths);
-        paths = appendJarsFromDir(dependenciesDir, paths);
-        return paths;
-    }
-
-    private static Stream<Path> appendJarsFromDir(Path directory, Stream<Path> paths) throws IOException {
-        if (Files.exists(directory)) {
-            Stream<Path> jarsPaths = Files.walk(directory)
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
-            return Stream.concat(paths, jarsPaths);
-        } else {
-            return paths;
         }
     }
 

@@ -4,13 +4,15 @@ import com.github.sulir.jamabuild.Project;
 import com.github.sulir.jamabuild.filtering.AllowedPhases;
 import com.github.sulir.jamabuild.filtering.Criterion;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @AllowedPhases(Criterion.Phase.POST_BUILD)
 public class UnresolvedReferences extends Criterion {
@@ -21,36 +23,13 @@ public class UnresolvedReferences extends Criterion {
 
     @Override
     public boolean isMet(Project project) {
-        Path jarsDir = project.getJARsDir();
-        Path dependenciesDir = project.getDependenciesDir();
-
-        try (Stream<Path> jarsPaths = prepareJarsPathsFrom(jarsDir, dependenciesDir)) {
-            List<String> allJarFiles = jarsPaths
-                    .map(Path::toString)
-                    .toList();
-
-            return hasUnresolvedReferencesInJARs(allJarFiles, dependenciesDir, project);
+        try {
+            List<String> allJarFiles = project.getJARsAndDependencies();
+            return hasUnresolvedReferencesInJARs(allJarFiles, project.getDependenciesDir(), project);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return false;
-    }
-
-    private Stream<Path> prepareJarsPathsFrom(Path jarsDir, Path dependenciesDir) throws IOException {
-        Stream<Path> paths = Stream.empty();
-        if (Files.exists(jarsDir)) {
-            Stream<Path> jarsPaths = Files.walk(jarsDir)
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
-            paths = Stream.concat(paths, jarsPaths);
-        }
-        if (Files.exists(dependenciesDir)) {
-            Stream<Path> dependenciesPaths = Files.walk(dependenciesDir)
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
-            paths = Stream.concat(paths, dependenciesPaths);
-        }
-        return paths;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

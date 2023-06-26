@@ -92,6 +92,25 @@ public class Project {
         }
     }
 
+    public List<String> getJARsAndDependencies() throws IOException {
+        Stream<Path> paths = Stream.empty();
+        paths = appendJARsFromDir(getJARsDir(), paths);
+        paths = appendJARsFromDir(getDependenciesDir(), paths);
+
+        return paths.map(Path::toString).toList();
+    }
+
+    private Stream<Path> appendJARsFromDir(Path directory, Stream<Path> paths) throws IOException {
+        if (Files.exists(directory)) {
+            Stream<Path> jarsPaths = Files.walk(directory)
+                    .filter(Files::isRegularFile)
+                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
+            return Stream.concat(paths, jarsPaths);
+        } else {
+            return paths;
+        }
+    }
+
     public Settings getSettings() {
         return settings;
     }
