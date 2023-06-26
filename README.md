@@ -60,6 +60,7 @@ Each inclusion and exclusion criterion in the configuration file consists of the
 
 Here is a list of post-build criteria:
 - `BashScript script_text`: exactly the same as the pre-build criterion but executed after the build.
+- `FailedBuild`: checks whether the build failed. If so, this criterion is met.
 - `UnresolvedReferences`: searches for unresolved references inside the project and dependency JARs using the `jdeps` tool. Ths criterion is met if at least one such reference was found.
 
 Custom criteria can be implemented by extending the class [Criterion](src/main/java/com/github/sulir/jamabuild/filtering/Criterion.java).
