@@ -1,6 +1,7 @@
 package com.github.sulir.jamabuild.criteria;
 
 import com.github.sulir.jamabuild.Project;
+import com.github.sulir.jamabuild.building.BuildResult;
 import com.github.sulir.jamabuild.filtering.AllowedPhases;
 import com.github.sulir.jamabuild.filtering.Criterion;
 import org.apache.commons.io.FileUtils;
@@ -19,7 +20,7 @@ public class AndroidSource extends Criterion {
     }
 
     @Override
-    public boolean isMet(Project project) {
+    public boolean isMet(Project project, BuildResult buildResult) {
         try (Stream<Path> files = Files.walk(project.getSourceDir())) {
             return files.filter(path -> path.toString().endsWith(".java"))
                     .anyMatch(path -> {
