@@ -60,6 +60,7 @@ Each inclusion and exclusion criterion in the configuration file consists of the
 
 Here is a list of post-build criteria:
 - `BashScript script_text`: exactly the same as the pre-build criterion but executed after the build.
+- `FailedBuild`: checks whether the build failed. If so, this criterion is met.
 - `NativeMethods`: searches for native methods in project and dependencies JAR files. This criterion is met if at least one native method was found.
 - `UnresolvedReferences`: searches for unresolved references inside the project and dependency JARs using the `jdeps` tool. This criterion is met if at least one such reference was found.
 

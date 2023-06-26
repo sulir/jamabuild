@@ -10,6 +10,7 @@ public class CriterionFactory {
     private static final List<Class<? extends Criterion>> criteria = List.of(
             AndroidSource.class,
             BashScript.class,
+            FailedBuild.class,
             NativeMethods.class,
             SourceFile.class,
             UnresolvedReferences.class);
