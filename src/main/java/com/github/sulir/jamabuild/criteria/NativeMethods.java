@@ -43,19 +43,20 @@ public class NativeMethods extends Criterion {
 
     private Stream<Path> prepareJarsPathsFrom(Path jarsDir, Path dependenciesDir) throws IOException {
         Stream<Path> paths = Stream.empty();
-        if (Files.exists(jarsDir)) {
-            Stream<Path> jarsPaths = Files.walk(jarsDir)
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
-            paths = Stream.concat(paths, jarsPaths);
-        }
-        if (Files.exists(dependenciesDir)) {
-            Stream<Path> dependenciesPaths = Files.walk(dependenciesDir)
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
-            paths = Stream.concat(paths, dependenciesPaths);
-        }
+        paths = appendJarsFromDir(jarsDir, paths);
+        paths = appendJarsFromDir(dependenciesDir, paths);
         return paths;
+    }
+
+    private static Stream<Path> appendJarsFromDir(Path directory, Stream<Path> paths) throws IOException {
+        if (Files.exists(directory)) {
+            Stream<Path> jarsPaths = Files.walk(directory)
+                    .filter(Files::isRegularFile)
+                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
+            return Stream.concat(paths, jarsPaths);
+        } else {
+            return paths;
+        }
     }
 
     private boolean hasNativeMethodCallInJARs(List<String> allJarFiles) throws IOException {
