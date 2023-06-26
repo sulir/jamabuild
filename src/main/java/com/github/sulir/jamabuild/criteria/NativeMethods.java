@@ -30,38 +30,32 @@ public class NativeMethods extends Criterion {
     public boolean isMet(Project project) {
         Path jarsDir = project.getJARsDir();
         Path dependenciesDir = project.getDependenciesDir();
-
-        if (Files.exists(jarsDir)) {
-            if (Files.exists(dependenciesDir)) {
-                try (Stream<Path> jarsPaths = Files.walk(jarsDir)
-                        .filter(Files::isRegularFile)
-                        .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
-                     Stream<Path> dependenciesPaths = Files.walk(dependenciesDir)
-                             .filter(Files::isRegularFile)
-                             .filter(p -> p.toString().toLowerCase().endsWith(".jar"))) {
-                    List<String> allJarFiles = Stream.concat(jarsPaths, dependenciesPaths)
-                            .map(Path::toString)
-                            .toList();
-
-                    return hasNativeMethodCallInJARs(allJarFiles);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try (Stream<Path> jarsPaths = Files.walk(jarsDir)
-                        .filter(Files::isRegularFile)
-                        .filter(p -> p.toString().toLowerCase().endsWith(".jar"))) {
-                    List<String> allJarFiles = jarsPaths
-                            .map(Path::toString)
-                            .toList();
-
-                    return hasNativeMethodCallInJARs(allJarFiles);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        try (Stream<Path> jarPaths = prepareJarsPathsFrom(jarsDir, dependenciesDir)) {
+            List<String> allJarFiles = jarPaths
+                    .map(Path::toString)
+                    .toList();
+            return hasNativeMethodCallInJARs(allJarFiles);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
+    }
+
+    private Stream<Path> prepareJarsPathsFrom(Path jarsDir, Path dependenciesDir) throws IOException {
+        Stream<Path> paths = Stream.empty();
+        if (Files.exists(jarsDir)) {
+            Stream<Path> jarsPaths = Files.walk(jarsDir)
+                    .filter(Files::isRegularFile)
+                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
+            paths = Stream.concat(paths, jarsPaths);
+        }
+        if (Files.exists(dependenciesDir)) {
+            Stream<Path> dependenciesPaths = Files.walk(dependenciesDir)
+                    .filter(Files::isRegularFile)
+                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"));
+            paths = Stream.concat(paths, dependenciesPaths);
+        }
+        return paths;
     }
 
     private boolean hasNativeMethodCallInJARs(List<String> allJarFiles) throws IOException {
