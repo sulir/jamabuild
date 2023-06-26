@@ -1,7 +1,6 @@
 package com.github.sulir.jamabuild.filtering;
 
 import com.github.sulir.jamabuild.Project;
-import com.github.sulir.jamabuild.building.BuildResult;
 
 public abstract class Criterion {
     public enum Phase {
@@ -20,7 +19,7 @@ public abstract class Criterion {
         this.type = type;
     }
 
-    public abstract boolean isMet(Project project, BuildResult buildResult);
+    public abstract boolean isMet(Project project);
 
     public Phase getPhase() {
         return phase;

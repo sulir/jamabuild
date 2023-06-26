@@ -42,12 +42,12 @@ public class Build {
         Project project = loadProject(settings);
         ProjectFilter projectFilter = ProjectFilter.load(settings);
 
-        if (projectFilter.exclusionMatches(project, Criterion.Phase.PRE_BUILD, null))
+        if (projectFilter.exclusionMatches(project, Criterion.Phase.PRE_BUILD))
             return;
 
-        BuildResult result = build(project);
+        build(project);
 
-        if (projectFilter.exclusionMatches(project, Criterion.Phase.POST_BUILD, result))
+        if (projectFilter.exclusionMatches(project, Criterion.Phase.POST_BUILD))
             return;
 
         log.info("Finished");
@@ -61,7 +61,7 @@ public class Build {
         return project;
     }
 
-    private BuildResult build(Project project) {
+    private void build(Project project) {
         log.info("Building");
         Builder builder = BuilderFactory.createBuilder(project);
 
@@ -75,6 +75,5 @@ public class Build {
             log.info("Copying dependencies");
             builder.copyDependencies();
         }
-        return result;
     }
 }

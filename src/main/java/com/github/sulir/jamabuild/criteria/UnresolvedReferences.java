@@ -1,7 +1,6 @@
 package com.github.sulir.jamabuild.criteria;
 
 import com.github.sulir.jamabuild.Project;
-import com.github.sulir.jamabuild.building.BuildResult;
 import com.github.sulir.jamabuild.filtering.AllowedPhases;
 import com.github.sulir.jamabuild.filtering.Criterion;
 
@@ -21,7 +20,7 @@ public class UnresolvedReferences extends Criterion {
     }
 
     @Override
-    public boolean isMet(Project project, BuildResult buildResult) {
+    public boolean isMet(Project project) {
         Path jarsDir = project.getJARsDir();
         Path dependenciesDir = project.getDependenciesDir();
 
