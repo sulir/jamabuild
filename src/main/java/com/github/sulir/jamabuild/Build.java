@@ -7,6 +7,7 @@ import com.github.sulir.jamabuild.filtering.Criterion;
 import com.github.sulir.jamabuild.filtering.ProjectFilter;
 import com.github.sulir.jamabuild.loading.Loader;
 import com.github.sulir.jamabuild.loading.LoaderFactory;
+import com.github.sulir.jamabuild.loading.ProjectLoadingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,23 +38,27 @@ public class Build {
         }
     }
 
-    public void run() throws Exception {
-        Settings settings = Settings.load(rootDirectory);
-        Project project = loadProject(settings);
-        ProjectFilter projectFilter = ProjectFilter.load(settings);
+    public void run() {
+        try {
+            Settings settings = Settings.load(rootDirectory);
+            Project project = loadProject(settings);
+            ProjectFilter projectFilter = ProjectFilter.load(settings);
 
-        if (projectFilter.exclusionMatches(project, Criterion.Phase.PRE_BUILD))
-            return;
+            if (projectFilter.exclusionMatches(project, Criterion.Phase.PRE_BUILD))
+                return;
 
-        build(project);
+            build(project);
 
-        if (projectFilter.exclusionMatches(project, Criterion.Phase.POST_BUILD))
-            return;
+            if (projectFilter.exclusionMatches(project, Criterion.Phase.POST_BUILD))
+                return;
 
-        log.info("Finished");
+            log.info("Finished");
+        } catch (ProjectLoadingException e) {
+            log.error("Failed to load project: {}", e.getMessage());
+        }
     }
 
-    private Project loadProject(Settings settings) throws Exception {
+    private Project loadProject(Settings settings) throws ProjectLoadingException {
         log.info("Loading");
         Loader loader = LoaderFactory.createLoader(rootDirectory, type, projectId);
         Project project = loader.load();

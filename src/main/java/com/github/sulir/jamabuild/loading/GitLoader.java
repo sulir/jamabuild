@@ -2,6 +2,7 @@ package com.github.sulir.jamabuild.loading;
 
 import com.github.sulir.jamabuild.Project;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.nio.file.Path;
 
@@ -11,18 +12,22 @@ public class GitLoader extends Loader {
     }
 
     @Override
-    public Project load() throws Exception {
+    public Project load() throws ProjectLoadingException {
         return gitClone(projectId);
     }
 
-    protected Project gitClone(String url) throws Exception {
+    protected Project gitClone(String url) throws ProjectLoadingException {
         Project project = new Project(projectId, getDirectory());
 
         if (!project.getSourceDir().toFile().exists()) {
-            Git.cloneRepository()
-                    .setURI(url)
-                    .setDirectory(project.getSourceDir().toFile())
-                    .call();
+            try {
+                Git.cloneRepository()
+                        .setURI(url)
+                        .setDirectory(project.getSourceDir().toFile())
+                        .call();
+            } catch (GitAPIException e) {
+                throw new ProjectLoadingException(e);
+            }
         }
 
         return project;

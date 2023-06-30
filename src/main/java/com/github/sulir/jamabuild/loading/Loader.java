@@ -11,5 +11,5 @@ public abstract class Loader {
         this.projectId = projectId;
     }
 
-    public abstract Project load() throws Exception;
+    public abstract Project load() throws ProjectLoadingException;
 }

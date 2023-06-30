@@ -10,7 +10,7 @@ public class GitHubLoader extends GitLoader {
     }
 
     @Override
-    public Project load() throws Exception {
+    public Project load() throws ProjectLoadingException {
         return gitClone(String.format(URL, projectId));
     }
 }
