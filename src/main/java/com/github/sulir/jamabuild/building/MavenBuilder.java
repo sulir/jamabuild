@@ -40,7 +40,12 @@ public class MavenBuilder extends Builder {
             String[] command = Arrays.copyOf(COPY_DEPENDENCIES, COPY_DEPENDENCIES.length);
             command[command.length - 1] = command[command.length - 1].concat(project.getDependenciesDir().toString());
 
-            Process process = Runtime.getRuntime().exec(command, null, project.getSourceDir().toFile());
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.directory(project.getSourceDir().toFile());
+            builder.redirectOutput(ProcessBuilder.Redirect.DISCARD);
+            builder.redirectError(ProcessBuilder.Redirect.DISCARD);
+
+            Process process = builder.start();
             process.waitFor();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
