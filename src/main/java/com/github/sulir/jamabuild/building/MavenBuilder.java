@@ -48,7 +48,7 @@ public class MavenBuilder extends Builder {
             Process process = builder.start();
             process.waitFor();
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            log.error("Error while copying dependencies: {}", e.getMessage());
         }
     }
 }

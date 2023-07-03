@@ -55,11 +55,11 @@ public class GradleBuilder extends Builder {
                     Path target = project.getDependenciesDir().resolve(dependency.getFileName());
                     Files.copy(dependency, target, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Error while copying dependencies: {}", e.getMessage());
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error reading Gradle cache directory: {}", e.getMessage());
         }
     }
 }

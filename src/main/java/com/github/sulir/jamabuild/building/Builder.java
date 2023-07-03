@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public abstract class Builder {
-    Logger log = LoggerFactory.getLogger(Builder.class);
+    protected static final Logger log = LoggerFactory.getLogger(Builder.class);
     protected final Project project;
 
     public Builder(Project project) {
@@ -30,7 +30,7 @@ public abstract class Builder {
             process.waitFor();
             return new BuildResult(getToolName(), process.exitValue());
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            log.error("Error while running build tool: {}", e.getMessage());
             return new BuildResult(getToolName(), -1);
         }
     }

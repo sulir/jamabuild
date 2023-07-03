@@ -1,5 +1,8 @@
 package com.github.sulir.jamabuild.building;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class BuildResult {
+    private static final Logger log = LoggerFactory.getLogger(Builder.class);
+
     private final String toolName;
     private final int exitCode;
 
@@ -25,7 +30,7 @@ public class BuildResult {
             writer.println("tool\texit_code");
             writer.println(toolName + "\t" + exitCode);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("Cannot write build result to {}: {}", file, e.getMessage());
         }
     }
 
@@ -44,7 +49,7 @@ public class BuildResult {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Cannot read build result: {}", e.getMessage());
         }
         return null;
     }
