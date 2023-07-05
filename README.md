@@ -94,4 +94,6 @@ tool&#9;exit_code
 Maven&#9;0
 </pre>
 
+## Screencast
+
 A screencast demonstrating the tool usage can be found [here](https://drive.google.com/drive/folders/18b7ZyaB3kpvhjzTQluzkLoe14Mlp-gtH?usp=sharing).
