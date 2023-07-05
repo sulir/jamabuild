@@ -93,3 +93,8 @@ Maven&#9;0
 </pre>
 
 A screencast demonstrating the tool usage will be added in near future.
+
+
+## Additional Notes
+
+- If you're running JaMaBuild on Mac, you might have problems due to missing `timeout` command, on which JaMaBuild relies (but MacOS does not support by default). To fix this, we recommend installing `coreutils` (e.g., using brew - [`brew install coreutils`](https://stackoverflow.com/a/70109348/2912282)).
