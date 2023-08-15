@@ -4,7 +4,7 @@ JaMaBuild is a tool that takes a list of Java projects as an input and tries to 
 
 The tool supports various project sources (local, Git, GitHub), inclusion and exclusion criteria (e.g., Android projects), artifact collection methods (resulting JAR files, build logs), and other configuration options.
 
-A screencast demonstrating the tool usage can be found [here](https://drive.google.com/drive/folders/18b7ZyaB3kpvhjzTQluzkLoe14Mlp-gtH?usp=sharing).
+A screencast demonstrating the tool usage can be found [here](https://www.youtube.com/watch?v=yniwxDH_cC8).
 
 ## Requirements
 
@@ -96,4 +96,6 @@ Maven&#9;0
 
 ## Demonstration/Screencast
 
-A screencast demonstrating the tool usage can be found [here](https://drive.google.com/file/d/1NC2fMmkFQUt1Hy8DR63gUZpD6godSYFi/view).
+A screencast demonstrating the tool usage can be found here:
+
+[![Screencast demonstrating JaMaBuild usage](https://img.youtube.com/vi/yniwxDH_cC8/0.jpg)](https://www.youtube.com/watch?v=yniwxDH_cC8 "JaMaBuild demo")
